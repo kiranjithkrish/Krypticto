@@ -10,7 +10,14 @@ import Foundation
 //url := "https://api.coingecko.com/api/v3/coins/markets?vs_currency=gbp&order=market_cap_desc&per_page=15&page=1&sparkline=true&price_change_percentage=24h"
 
 // MARK: - Welcome
-struct CoinModel: Identifiable, Codable {
+struct CoinModel: Identifiable, Codable, Hashable {
+	static func == (lhs: CoinModel, rhs: CoinModel) -> Bool {
+		lhs.id == rhs.id
+	}
+	func hash(into hasher: inout Hasher) {
+		   hasher.combine(id)
+	}
+	
     let id, symbol, name: String
     let image: String
     let currentPrice: Double
