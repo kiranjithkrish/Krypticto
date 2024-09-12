@@ -10,7 +10,7 @@ import SwiftUI
 struct HomeView: View {
     @State private var showPortfolio: Bool = false
 	@State private var showMyPortfolioView: Bool = false
-	
+	@State private var showSettingsView: Bool = false
 	@State private var showDetailView: Bool = false
 	@State private var selectedCoin: CoinModel? = nil
 	
@@ -35,11 +35,19 @@ struct HomeView: View {
 						allCoinsList
 							.transition(.move(edge: .leading))
 					} else {
+						ZStack {
+							if viewModel.portfolioCoins.isEmpty && viewModel.searchText.isEmpty {
+								Text("Add coins to your portfolio")
+							}
+						}
 						portfolioCoinsList
 							.transition(.move(edge: .trailing))
 					}
 					Spacer(minLength: 0)
 				}
+				.sheet(isPresented: $showSettingsView, content: {
+					SettingsView()
+				})
 			}
 			.navigationDestination(for: CoinModel.self) { coin in
 				DetailView(coin: coin)
@@ -58,7 +66,12 @@ extension HomeView {
                     CircleButtonAnimationView(animate: $showPortfolio)
                 }
 				.onTapGesture {
-					showMyPortfolioView.toggle()
+					if showPortfolio {
+						showMyPortfolioView.toggle()
+					} else {
+						showSettingsView.toggle()
+					}
+					
 				}
                 .animation(.none, value: 0)
             Spacer()

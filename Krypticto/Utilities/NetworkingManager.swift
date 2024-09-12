@@ -35,11 +35,10 @@ class NetworkingManager {
 		request.setValue("CG-GWvPtSF2sC16Ax1oqHmjr2pK", forHTTPHeaderField: "Authorization")
 		
 		return URLSession.shared.dataTaskPublisher(for: request)
-			.subscribe(on: DispatchQueue.global(qos: .default))
 			.tryMap {
 				try handleURLResponse(output: $0, url: request.url!)
 			}
-			.receive(on: DispatchQueue.main)
+			.retry(3)
 			.eraseToAnyPublisher()
 	}
 	
